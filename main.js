@@ -8,26 +8,60 @@
 // http://learn.javascript.ru/
 // https://stackoverflow.com/
 var conjNum = 0;
-var tests = ["((A&B)|(C&D))", "((A|B)&(C|D))", "(A&B)", "(A&(B&(!A)))", "(E|(D&(A|C)))", "Тест окончен"];
 var testNumber = 0;
 var score = 0;
+var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 function main(){
     var formula = document.getElementById("formula").value.toString();
-    var exception = /^\([A-Z]\|[A-Z]\)$/;
-    if (exception.test(formula)) {
-        output(exception.test(formula));
+    if (checkException(formula)) {
+        output(checkException(formula));
     }
     else
     if (formula.includes( "&") && formula.includes( "(") && formula.includes( ")") && checkBracketsNum(formula)) {
         output(checkBinaryFormula(formula));
     } 
-    else if (formula.includes( "!") && formula.includes( "(") && formula.includes( ")")) {
+    else if (formula.includes( "!") && formula.includes( "(") && formula.includes( ")") && checkBracketsNum(formula)) {
         output(checkUnaryFormula(formula));
     }
     else {
         output(checkSymbols(formula));
     }
     conjNum = 0;
+}
+
+function checkException(formula){
+    var result = false;
+    var isSymbol = false;
+    var isFormula = false;
+    if (formula.indexOf("(") === 0) {
+        formula = removeOuterBrackets(formula);
+        var operatorIndex = getCentralOperationIndex(formula, "|");
+        if (operatorIndex >= formula.length) {
+            return false;
+        }
+        var formulaElements = [];
+        formulaElements[0] = formula.slice(0, operatorIndex);
+        formulaElements[1] = formula.slice(operatorIndex + 1, formula.length);
+        for (var i = 0; i < formulaElements.length; i++) {
+            if (checkSymbols(formulaElements[i])) {
+                result = true;
+                isSymbol = true;
+            } else if (checkUnaryFormula(formulaElements[i])) {
+                result = true;
+                isSymbol = true;
+            } else if (checkException(formulaElements[i])) {
+                result = true;
+                isFormula = true;
+            } else {
+                result = false;
+                break;
+            }
+        }
+    }
+    if (isSymbol === false){
+        result = false;
+    }
+    return result;
 }
 
 function output (result){
@@ -68,7 +102,7 @@ function checkUnaryFormula(formula) {
     if (formula.indexOf("(") === 0) {
         formula = removeOuterBrackets(formula);
     }
-    var rightSymbols = formula.match(/[A-Z01]/g);
+    var rightSymbols = formula.match(/[A-Z]/g);
     if (rightSymbols === null || rightSymbols.length !== 1) {
         return false;
     }
@@ -141,8 +175,39 @@ function getCentralOperationIndex(formula, operator) {
     return i;
 }
 
+function generateTest(){
+    var result ="";
+    result +="(";
+    if (Math.round(Math.random()-0.8)){
+        result += generateTest();
+    }
+    else{
+        if (Math.round(Math.random()-0.8)){
+            result +="!";        
+        }
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    if (Math.round(Math.random())){
+        result += "&";
+    }
+    else{
+        result += "|";
+    }
+    if (Math.round(Math.random()-0.8)){
+        result += generateTest();
+    }
+    else{
+        if (Math.round(Math.random()-0.8)){
+            result +="!";        
+        }
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    result +=")";
+    return result; 
+}
+
 function test(){
-    if (testNumber<tests.length-1){
+    if (testNumber<5){
         main();
         var choice;
         var inp = document.getElementsByName('radio');
@@ -155,9 +220,12 @@ function test(){
             score++;
         }
         testNumber++;
-        document.getElementById("formula").value = tests[testNumber];
-        if (testNumber===tests.length-1){
+        if (testNumber===5){
+            document.getElementById("formula").value = "Тест окончен";
             document.getElementById("score").innerHTML ="Правильных ответов - "+score+" из 5";
+        }
+        else{
+            document.getElementById("formula").value = generateTest();
         }
     }
 }
