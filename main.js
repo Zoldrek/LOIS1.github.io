@@ -30,6 +30,9 @@ function main(){
 }
 
 function checkException(formula){
+    var result = false;
+    var isSymbol = false;
+    var isFormula = false;
     var symbol;
     if (formula.includes( "|") && !formula.includes( "&")){
         symbol = "|";
@@ -40,9 +43,6 @@ function checkException(formula){
     else{
         return false;
     } 
-    var result = false;
-    var isSymbol = false;
-    var isFormula = false;
     if (formula.indexOf("(") === 0) {
         formula = removeOuterBrackets(formula);
         var operatorIndex = getCentralOperationIndex(formula, symbol);
@@ -58,7 +58,7 @@ function checkException(formula){
                 isSymbol = true;
             } else if (checkUnaryFormula(formulaElements[i])) {
                 result = true;
-                isSymbol = true;
+                isFormula = true;
             } else if (checkException(formulaElements[i])) {
                 result = true;
                 isFormula = true;
@@ -112,7 +112,7 @@ function checkUnaryFormula(formula) {
     if (formula.indexOf("(") === 0) {
         formula = removeOuterBrackets(formula);
     }
-    var rightSymbols = formula.match(/[A-Z]/g);
+    var rightSymbols = formula.match(/[A-Z01]/g);
     if (rightSymbols === null || rightSymbols.length !== 1) {
         return false;
     }
