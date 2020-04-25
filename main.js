@@ -30,12 +30,22 @@ function main(){
 }
 
 function checkException(formula){
+    var symbol;
+    if (formula.includes( "|") && !formula.includes( "&")){
+        symbol = "|";
+    }
+    else if (!formula.includes( "|") && formula.includes( "&")){
+        symbol = "&";
+    }
+    else{
+        return false;
+    } 
     var result = false;
     var isSymbol = false;
     var isFormula = false;
     if (formula.indexOf("(") === 0) {
         formula = removeOuterBrackets(formula);
-        var operatorIndex = getCentralOperationIndex(formula, "|");
+        var operatorIndex = getCentralOperationIndex(formula, symbol);
         if (operatorIndex >= formula.length) {
             return false;
         }
