@@ -115,7 +115,7 @@ function checkBracketsNum(formula) {
 function removeOuterBrackets(formula) {
     formula = formula.replace(/^\(/, "");
     formula = formula.replace(/\)$/, "");
-    return formula
+    return formula;
 }
 
 function checkUnaryFormula(formula) {
@@ -125,7 +125,7 @@ function checkUnaryFormula(formula) {
         return check.test(formula);
     }
     else{
-        return false
+        return false;
     }
 }
 /*
