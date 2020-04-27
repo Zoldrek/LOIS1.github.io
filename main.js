@@ -17,7 +17,7 @@ var tests = ["((A&B)|(C&D))", "((A|B)&(C|D))", "A", "(A&B)","(A|B)",
 "(A1|B)", "(!1)", "((!A)&(!B))", "(A&(B|C))", "((A&B)&(C&D))",
 "(((!T)|P)&M)", "((((!N)&I)|(!E))|L)", "((!A)&(B|C))", "((A|B)&(C&D))", "(X|((!H)|(O&H)))"];
 var testResults = [false, true, true, true, true,
-false, true, false, false, false,
+true, true, false, false, false,
 false, false, false, true, true,
 false, false, true, true, false,
 true, false, true, false, false];
@@ -121,7 +121,7 @@ function removeOuterBrackets(formula) {
 function checkUnaryFormula(formula) {
     if (formula.indexOf("(") === 0) {
         formula = removeOuterBrackets(formula);
-        check = /^!?[A-Z]{1}$/;
+        var check = /^!?[A-Z]{1}$/;
         return check.test(formula);
     }
     else{
