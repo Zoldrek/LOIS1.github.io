@@ -11,6 +11,16 @@ var conjNum = 0;
 var testNumber = 0;
 var score = 0;
 var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+var tests = ["((A&B)|(C&D))", "((A|B)&(C|D))", "A", "(A&B)","(A|B)",
+"(A&(!A))", "(A&(B&(!A)))", "0", "1", "(0|1)", 
+"(E|(D&(A|0)))", "(E|(D&(A|C)))", "(D&!(A&C))", "(A|(B|C)", "(A&(B&F))",
+"(A1|B)", "(!1)", "((!A)&(!B))", "(A&(B|C))", "((A&B)&(C&D))",
+"(((!T)|P)&M)", "((((!N)&I)|(!E))|L)", "((!A)&(B|C))", "((A|B)&(C&D))", "(X|((!H)|(O&H)))"];
+var testResults = [false, true, true, true, true,
+false, true, false, false, false,
+false, false, false, true, true,
+false, false, true, true, false,
+true, false, true, false, false];
 function main(){
     var formula = document.getElementById("formula").value.toString();
     if (checkException(formula)) {
@@ -111,6 +121,17 @@ function removeOuterBrackets(formula) {
 function checkUnaryFormula(formula) {
     if (formula.indexOf("(") === 0) {
         formula = removeOuterBrackets(formula);
+        check = /^!?[A-Z]{1}$/;
+        return check.test(formula);
+    }
+    else{
+        return false
+    }
+}
+/*
+function checkUnaryFormula(formula) {
+    if (formula.indexOf("(") === 0) {
+        formula = removeOuterBrackets(formula);
     }
     var rightSymbols = formula.match(/[A-Z01]/g);
     if (rightSymbols === null || rightSymbols.length !== 1) {
@@ -126,7 +147,7 @@ function checkUnaryFormula(formula) {
     }
     return true;
 }
-
+*/
 function checkBinaryFormula(formula) {
     var result = false;
 
@@ -193,9 +214,13 @@ function generateTest(){
     }
     else{
         if (Math.round(Math.random()-0.8)){
-            result +="!";        
+            result +="(!";
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+            result +=")";        
         }
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
+        else{
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
     }
     if (Math.round(Math.random())){
         result += "&";
@@ -208,9 +233,13 @@ function generateTest(){
     }
     else{
         if (Math.round(Math.random()-0.8)){
-            result +="!";        
+            result +="(!";
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+            result +=")";        
         }
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
+        else{
+            result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
     }
     result +=")";
     return result; 
@@ -236,6 +265,35 @@ function test(){
         }
         else{
             document.getElementById("formula").value = generateTest();
+        }
+    }
+}
+
+function test25(){
+    document.getElementById("result").innerHTML = "Test successful";
+    console.log("true = КНФ, false = Не КНФ")
+    for (var j = 0; j < tests.length; j++) {
+        var result = false;        
+        if (checkException(tests[j])) {
+            result = checkException(tests[j]);
+        }
+        else
+        if (tests[j].includes( "&") && tests[j].includes( "(") && tests[j].includes( ")") && checkBracketsNum(tests[j])) {
+            result = checkBinaryFormula(tests[j]);
+        } 
+        else if (tests[j].includes( "!") && tests[j].includes( "(") && tests[j].includes( ")") && checkBracketsNum(tests[j])) {
+            result = checkUnaryFormula(tests[j]);
+        }
+        else {
+            result = checkSymbols(tests[j]);
+        }
+        conjNum = 0;
+        if (result === testResults[j]){
+            console.log("formula "+tests[j]+", get "+result+", expected "+testResults[j]);
+        }
+        else {
+            document.getElementById("result").innerHTML = ("Test "+(j+1)+" failed: "+"formula "+tests[j]+", get "+result+", expected "+testResults[j]);
+            break;
         }
     }
 }
