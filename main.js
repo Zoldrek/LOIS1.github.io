@@ -13,7 +13,7 @@ var score = 0;
 var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var tests = ["((A&B)|(C&D))", "((A|B)&(C|D))", "A", "(A&B)","(A|B)",
 "(A&(!A))", "(A&(B&(!A)))", "0", "1", "(0|1)", 
-"(E|(D&(A|0)))", "(E|(D&(A|C)))", "(D&!(A&C))", "(A|(B|C)", "(A&(B&F))",
+"(E|(D&(A|0)))", "(E|(D&(A|C)))", "(D&!(A&C))", "(A|(B|C))", "(A&(B&F))",
 "(A1|B)", "(!1)", "((!A)&(!B))", "(A&(B|C))", "((A&B)&(C&D))",
 "(((!T)|P)&M)", "((((!N)&I)|(!E))|L)", "((!A)&(B|C))", "((A|B)&(C&D))", "(X|((!H)|(O&H)))"];
 var testResults = [false, true, true, true, true,
@@ -30,7 +30,7 @@ function main(){
     if (formula.includes( "&") && formula.includes( "(") && formula.includes( ")") && checkBracketsNum(formula)) {
         output(checkBinaryFormula(formula));
     } 
-    else if (formula.includes( "!") && formula.includes( "(") && formula.includes( ")") && checkBracketsNum(formula)) {
+    else if (formula.includes( "!") && checkBracketsNum(formula)) {
         output(checkUnaryFormula(formula));
     }
     else {
@@ -263,7 +263,7 @@ function test25(){
     console.log("true = КНФ, false = Не КНФ")
     for (var j = 0; j < tests.length; j++) {
         var result = false;        
-        if (checkException(tests[j])) {
+        if (checkException(tests[j]) && checkBracketsNum(tests[j])) {
             result = checkException(tests[j]);
         }
         else
