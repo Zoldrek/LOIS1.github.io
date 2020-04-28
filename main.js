@@ -19,8 +19,8 @@ var tests = ["((A&B)|(C&D))", "((A|B)&(C|D))", "A", "(A&B)","(A|B)",
 var testResults = [false, true, true, true, true,
 true, true, false, false, false,
 false, false, false, true, true,
-false, false, true, true, false,
-true, false, true, false, false];
+false, false, true, true, true,
+true, false, true, true, false];
 function main(){
     var formula = document.getElementById("formula").value.toString();
     if (checkException(formula)) {
@@ -41,8 +41,6 @@ function main(){
 
 function checkException(formula){
     var result = false;
-    var isSymbol = false;
-    var isFormula = false;
     var symbol;
     if (formula.includes( "|") && !formula.includes( "&")){
         symbol = "|";
@@ -65,21 +63,15 @@ function checkException(formula){
         for (var i = 0; i < formulaElements.length; i++) {
             if (checkSymbols(formulaElements[i])) {
                 result = true;
-                isSymbol = true;
             } else if (checkUnaryFormula(formulaElements[i])) {
                 result = true;
-                isFormula = true;
             } else if (checkException(formulaElements[i])) {
                 result = true;
-                isFormula = true;
             } else {
                 result = false;
                 break;
             }
         }
-    }
-    if (isSymbol === false){
-        result = false;
     }
     return result;
 }
@@ -175,7 +167,7 @@ function checkBinaryFormula(formula) {
                 result = true;
             } else if (checkUnaryFormula(formulaElements[i])) {
                 result = true;
-            } else if (checkBinaryFormula(formulaElements[i])) {
+            } else if (checkException(formulaElements[i])) {
                 result = true;
             } else {
                 result = false;
