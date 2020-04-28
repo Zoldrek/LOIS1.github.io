@@ -23,7 +23,7 @@ false, false, true, true, true,
 true, false, true, true, false];
 function main(){
     var formula = document.getElementById("formula").value.toString();
-    if (checkException(formula)) {
+    if (checkException(formula) && checkBracketsNum(formula)) {
         output(checkException(formula));
     }
     else
@@ -113,12 +113,9 @@ function removeOuterBrackets(formula) {
 function checkUnaryFormula(formula) {
     if (formula.indexOf("(") === 0) {
         formula = removeOuterBrackets(formula);
+    }
         var check = /^!?[A-Z]{1}$/;
         return check.test(formula);
-    }
-    else{
-        return false;
-    }
 }
 /*
 function checkUnaryFormula(formula) {
