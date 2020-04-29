@@ -113,9 +113,12 @@ function removeOuterBrackets(formula) {
 function checkUnaryFormula(formula) {
     if (formula.indexOf("(") === 0) {
         formula = removeOuterBrackets(formula);
-    }
         var check = /^!?[A-Z]{1}$/;
         return check.test(formula);
+    }
+    else{
+        return false;
+    }
 }
 /*
 function checkUnaryFormula(formula) {
